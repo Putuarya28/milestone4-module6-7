@@ -1,0 +1,35 @@
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  role      String   @default("user") // 'user' or 'admin'
+  accounts  Account[]
+  transactions Transaction[]
+}
+
+model Account {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  balance   Float    @default(0)
+  user      User     @relation(fields: [userId], references: [id])
+  transactions Transaction[]
+}
+
+model Transaction {
+  id        Int      @id @default(autoincrement())
+  accountId Int
+  userId    Int
+  amount    Float
+  type      String   // e.g., "deposit", "withdrawal", "transfer"
+  account   Account   @relation(fields: [accountId], references: [id])
+  user      User      @relation(fields: [userId], references: [id])
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
