@@ -1,4 +1,4 @@
-# RevoBank API
+# RevoBank
 
 ## Overview
 
