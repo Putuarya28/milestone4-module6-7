@@ -1,1 +1,22 @@
-node_modules
+# Node modules
+node_modules/
+
+# Prisma generated files
+prisma/.env
+prisma/migrations/
+prisma/dev.db
+prisma/dev.db-journal
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Build output
+dist/
+coverage/
+
+# OS/IDE files
+.DS_Store
+*.log
+.vscode/
