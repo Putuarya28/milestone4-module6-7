@@ -1,77 +1,108 @@
 # RevoBank API
 
-RevoBank is a secure and scalable banking API designed for a fictional financial institution. This API provides essential banking operations, user authentication, and a robust database design using Prisma ORM and PostgreSQL.
+## Overview
+
+RevoBank is a secure, scalable banking API built with NestJS, Prisma, and PostgreSQL (TigerData/TimescaleDB). It provides user authentication, role-based access, and full CRUD for users, accounts, and transactions. The system is designed for modern cloud deployment and includes comprehensive automated tests.
 
 ## Features
 
-- User registration and authentication
-- Account management (create, retrieve, update, delete)
-- Transaction management (deposit, withdraw, transfer, retrieve)
-- Secure JWT-based authentication
-- Scalable architecture using NestJS
+- **User Registration & Login**: Secure JWT authentication for users.
+- **Role-Based Access**: Admin and user roles for endpoint protection.
+- **Account Management**: Create, read, update, delete accounts.
+- **Transaction Operations**: Deposit, withdraw, transfer funds between accounts.
+- **User Profile**: View and update user profile.
+- **Comprehensive Testing**: Jest-based unit and integration tests.
 
 ## Technologies Used
 
-- NestJS: A progressive Node.js framework for building efficient and scalable server-side applications.
-- Prisma: A modern database toolkit that simplifies database access and management.
-- PostgreSQL: A powerful, open-source relational database system.
+- **NestJS**: Progressive Node.js framework for scalable server-side apps.
+- **Prisma ORM**: Type-safe database access and migrations.
+- **PostgreSQL (TigerData/TimescaleDB)**: Cloud database backend.
+- **JWT**: Authentication and authorization.
+- **Jest**: Testing framework.
+- **pnpm**: Fast package manager.
+- **Render**: Example deployment platform.
 
-## Getting Started
+## How to Run Locally
 
 ### Prerequisites
 
-- Node.js (version 14 or higher)
-- PostgreSQL (version 12 or higher)
+- Node.js >= 18
+- pnpm (recommended)
+- PostgreSQL database (TigerData/TimescaleDB)
 
-### Installation
+### Setup Instructions
 
-1. Clone the repository:
-
+1. **Clone the repository:**
    ```
-   git clone https://github.com/yourusername/revo-bank-api.git
-   ```
-
-2. Navigate to the project directory:
-
-   ```
+   git clone <your-repo-url>
    cd revo-bank-api
    ```
-
-3. Install the dependencies:
-
+2. **Install dependencies:**
    ```
-   npm install
+   pnpm install
+   ```
+3. **Configure environment variables:**
+   - Copy `.env.example` to `.env` and fill in your database credentials and JWT secret.
+   - Example:
+     ```
+     DATABASE_URL="postgres://tsdbadmin:<password>@<host>:<port>/<db>?sslmode=require"
+     JWT_SECRET="yourSuperSecretKey"
+     ```
+4. **Generate Prisma client:**
+   ```
+   pnpm prisma generate
+   ```
+5. **Run migrations:**
+   ```
+   pnpm prisma migrate dev --name init
+   ```
+6. **Start the server:**
+   ```
+   pnpm dev
+   ```
+7. **Run tests:**
+   ```
+   pnpm test
    ```
 
-4. Set up the database:
+## API Endpoints
 
-   - Create a PostgreSQL database for RevoBank.
-   - Update the database connection string in the `.env` file (create one based on `.env.example`).
+### Auth
 
-5. Run the Prisma migrations:
+- `POST /auth/register` — Register a new user
+- `POST /auth/login` — Login and receive JWT
 
-   ```
-   npx prisma migrate dev --name init
-   ```
+### Users
 
-### Running the Application
+- `GET /user/profile` — Get user profile
+- `PUT /user/profile` — Update user profile
 
-To start the application, run:
+### Accounts
 
-```
-npm run start:dev
-```
+- `POST /accounts` — Create account
+- `GET /accounts/:id` — Get account by ID
+- `GET /accounts` — List all accounts
+- `PUT /accounts/:id` — Update account
+- `DELETE /accounts/:id` — Delete account
 
-The API will be available at `http://localhost:3000`.
+### Transactions
 
-### API Documentation
+- `POST /transactions/deposit` — Deposit funds
+- `POST /transactions/withdraw` — Withdraw funds
+- `POST /transactions/transfer` — Transfer funds
+- `GET /transactions/:id` — Get transaction by ID
+- `GET /transactions` — List all transactions
 
-Refer to the API documentation for details on available endpoints and usage.
+## Prisma Schema
 
-## Contributing
+See `prisma/schema.prisma` for models: User, Account, Transaction.
 
-Contributions are welcome! Please open an issue or submit a pull request for any enhancements or bug fixes.
+## Deployment
+
+- Database: TigerData/TimescaleDB (cloud)
+- Backend: Deployable to Render, Vercel, or any Node.js host
 
 ## License
 
-This project is licensed under the MIT License. See the LICENSE file for details.
+MIT
