@@ -51,5 +51,6 @@
     "revoBank"
   ],
   "author": "RevoBank Team",
-  "license": "MIT"
+  "license": "MIT",
+  "packageManager": "pnpm@10.13.1"
 }
