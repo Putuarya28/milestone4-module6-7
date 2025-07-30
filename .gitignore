@@ -13,7 +13,7 @@ prisma/dev.db-journal
 .env.*.local
 
 # Build output
-dist/
+dist
 coverage/
 
 # OS/IDE files
