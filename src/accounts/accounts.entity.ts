@@ -1,5 +1,5 @@
-import { User } from '../users/users.entity';
-import { Transaction } from '../transactions/transactions.entity';
+import { User } from "../users/users.entity";
+import { Transaction } from "../transactions/transactions.entity";
 
 export class Account {
   id!: number;

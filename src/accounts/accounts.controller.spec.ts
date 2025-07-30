@@ -2,7 +2,6 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { AccountsController } from "./accounts.controller";
 import { AccountsService } from "./accounts.service";
 import { JwtAuthGuard } from "../common/guards/jwt-auth.guard";
-import { ExecutionContext } from "@nestjs/common";
 
 describe("AccountsController", () => {
   let controller: AccountsController;

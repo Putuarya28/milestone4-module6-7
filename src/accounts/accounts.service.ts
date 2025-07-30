@@ -22,7 +22,6 @@ export class AccountsService {
   }
 
   async findAll(): Promise<Account[]> {
-    // This implementation assumes you want all accounts, not just by userId
     return this.prisma.account.findMany();
   }
 
@@ -30,7 +29,7 @@ export class AccountsService {
     id: string,
     updateAccountDto: { balance?: number }
   ): Promise<Account> {
-    // Only balance is updatable in this DTO
+    // Only balance is updatable
     return this.updateAccount(Number(id), updateAccountDto.balance!);
   }
 
@@ -38,6 +37,8 @@ export class AccountsService {
     return this.deleteAccount(Number(id));
   }
 
+
+  // internal methods for Prisma operations
   async createAccount(
     userId: number,
     initialBalance: number
