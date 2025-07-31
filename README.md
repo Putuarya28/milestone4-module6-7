@@ -76,14 +76,14 @@ RevoBank is a secure, scalable banking API built with NestJS, Prisma, and Postgr
 ### Users
 
 - `GET /user/profile` — Get user profile
-- `PUT /user/profile` — Update user profile
+- `PATCH /user/profile` — Update user profile
 
 ### Accounts
 
 - `POST /accounts` — Create account
 - `GET /accounts/:id` — Get account by ID
 - `GET /accounts` — List all accounts
-- `PUT /accounts/:id` — Update account
+- `PATCH /accounts/:id` — Update account
 - `DELETE /accounts/:id` — Delete account
 
 ### Transactions
@@ -93,6 +93,20 @@ RevoBank is a secure, scalable banking API built with NestJS, Prisma, and Postgr
 - `POST /transactions/transfer` — Transfer funds
 - `GET /transactions/:id` — Get transaction by ID
 - `GET /transactions` — List all transactions
+
+## Role-Based Access Control
+
+- **Users** can only manage their own accounts and transactions.
+- **Admins** can access and manage all users’ data.
+
+## Business Logic Notes
+
+- All transaction operations (deposit, withdraw, transfer) include:
+  - Validation for positive amounts
+  - Account existence checks
+  - Sufficient balance checks for withdraw/transfer
+  - Prevention of self-transfer
+  - Atomic database transaction for transfers
 
 ## Prisma Schema
 

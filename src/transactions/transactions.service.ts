@@ -12,6 +12,11 @@ export class TransactionsService {
   constructor(private readonly prisma: PrismaService) {}
 
   async deposit({ accountId, amount }: DepositDto): Promise<Transaction> {
+    if (amount <= 0) throw new Error("Deposit amount must be positive");
+    const account = await this.prisma.account.findUnique({
+      where: { id: accountId },
+    });
+    if (!account) throw new Error("Account not found");
     await this.prisma.account.update({
       where: { id: accountId },
       data: { balance: { increment: amount } },
@@ -19,9 +24,7 @@ export class TransactionsService {
     return this.prisma.transaction.create({
       data: {
         accountId,
-        userId: (await this.prisma.account.findUnique({
-          where: { id: accountId },
-        }))!.userId,
+        userId: account.userId,
         amount,
         type: "deposit",
       },
@@ -29,6 +32,12 @@ export class TransactionsService {
   }
 
   async withdraw({ accountId, amount }: WithdrawDto): Promise<Transaction> {
+    if (amount <= 0) throw new Error("Withdraw amount must be positive");
+    const account = await this.prisma.account.findUnique({
+      where: { id: accountId },
+    });
+    if (!account) throw new Error("Account not found");
+    if (account.balance < amount) throw new Error("Insufficient balance");
     await this.prisma.account.update({
       where: { id: accountId },
       data: { balance: { decrement: amount } },
@@ -36,9 +45,7 @@ export class TransactionsService {
     return this.prisma.transaction.create({
       data: {
         accountId,
-        userId: (await this.prisma.account.findUnique({
-          where: { id: accountId },
-        }))!.userId,
+        userId: account.userId,
         amount,
         type: "withdraw",
       },
@@ -50,37 +57,46 @@ export class TransactionsService {
     toAccountId,
     amount,
   }: TransferDto): Promise<{ from: Transaction; to: Transaction }> {
-    await this.prisma.account.update({
+    if (amount <= 0) throw new Error("Transfer amount must be positive");
+    if (fromAccountId === toAccountId)
+      throw new Error("Cannot transfer to the same account");
+    const fromAccount = await this.prisma.account.findUnique({
       where: { id: fromAccountId },
-      data: { balance: { decrement: amount } },
     });
-    await this.prisma.account.update({
+    const toAccount = await this.prisma.account.findUnique({
       where: { id: toAccountId },
-      data: { balance: { increment: amount } },
     });
-    const fromUserId = (await this.prisma.account.findUnique({
-      where: { id: fromAccountId },
-    }))!.userId;
-    const toUserId = (await this.prisma.account.findUnique({
-      where: { id: toAccountId },
-    }))!.userId;
-    const fromTx = await this.prisma.transaction.create({
-      data: {
-        accountId: fromAccountId,
-        userId: fromUserId,
-        amount,
-        type: "transfer_out",
-      },
+    if (!fromAccount || !toAccount) throw new Error("Account not found");
+    if (fromAccount.balance < amount)
+      throw new Error("Insufficient balance in source account");
+    // Use transaction for atomicity
+    return this.prisma.$transaction(async (prisma) => {
+      await prisma.account.update({
+        where: { id: fromAccountId },
+        data: { balance: { decrement: amount } },
+      });
+      await prisma.account.update({
+        where: { id: toAccountId },
+        data: { balance: { increment: amount } },
+      });
+      const fromTx = await prisma.transaction.create({
+        data: {
+          accountId: fromAccountId,
+          userId: fromAccount.userId,
+          amount,
+          type: "transfer_out",
+        },
+      });
+      const toTx = await prisma.transaction.create({
+        data: {
+          accountId: toAccountId,
+          userId: toAccount.userId,
+          amount,
+          type: "transfer_in",
+        },
+      });
+      return { from: fromTx, to: toTx };
     });
-    const toTx = await this.prisma.transaction.create({
-      data: {
-        accountId: toAccountId,
-        userId: toUserId,
-        amount,
-        type: "transfer_in",
-      },
-    });
-    return { from: fromTx, to: toTx };
   }
 
   async createTransaction(

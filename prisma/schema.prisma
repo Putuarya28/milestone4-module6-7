@@ -13,6 +13,8 @@ model Account {
   balance   Float    @default(0)
   user      User     @relation(fields: [userId], references: [id])
   transactions Transaction[]
+
+  @@index([userId])
 }
 
 model Transaction {
@@ -23,6 +25,10 @@ model Transaction {
   type      String   // e.g., "deposit", "withdrawal", "transfer"
   account   Account   @relation(fields: [accountId], references: [id])
   user      User      @relation(fields: [userId], references: [id])
+
+  @@index([accountId])
+  @@index([userId])
+  @@index([type])
 }
 
 datasource db {

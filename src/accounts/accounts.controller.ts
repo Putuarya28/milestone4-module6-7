@@ -2,7 +2,7 @@ import {
   Controller,
   Get,
   Post,
-  Put,
+  Patch,
   Delete,
   Body,
   Param,
@@ -25,7 +25,7 @@ export class AccountsController {
     @Req() req: Request & { user: any },
     @Body() createAccountDto: CreateAccountDto
   ) {
-    // Only allow users to create accounts for themselves unless admin
+    
     const user = req.user;
     if (user.role !== "admin" && Number(createAccountDto.userId) !== user.id) {
       throw new Error("Forbidden");
@@ -62,7 +62,7 @@ export class AccountsController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Put(":id")
+  @Patch(":id")
   async update(
     @Req() req: Request & { user: any },
     @Param("id") id: string,
