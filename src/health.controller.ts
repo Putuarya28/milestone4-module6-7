@@ -1,9 +1,9 @@
-import { Controller, Get } from "@nestjs/common";
+// import { Controller, Get } from "@nestjs/common";
 
-@Controller()
-export class HealthController {
-  @Get()
-  health() {
-    return { status: "ok", message: "RevoBank API is running" };
-  }
-}
+// @Controller()
+// export class HealthController {
+//   @Get()
+//   health() {
+//     return { status: "ok", message: "RevoBank API is running" };
+//   }
+// }
