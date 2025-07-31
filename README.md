@@ -66,6 +66,16 @@ RevoBank is a secure, scalable banking API built with NestJS, Prisma, and Postgr
    pnpm test
    ```
 
+## API Documentation (Swagger)
+
+This project includes interactive API documentation using Swagger (OpenAPI).
+
+- After deploying or running locally, visit `/api` (e.g., `https://milestone4-module6-7-production.up.railway.app/api`).
+- You can view all endpoints, try them out, and see request/response schemas.
+- For protected endpoints, click the "Authorize" button and enter your JWT token as `Bearer <token>`.
+
+---
+
 ## API Endpoints
 
 ### Auth
@@ -115,7 +125,7 @@ See `prisma/schema.prisma` for models: User, Account, Transaction.
 ## Deployment
 
 - Database: TigerData/TimescaleDB (cloud)
-- Backend: Deployable to Render, Vercel, or any Node.js host
+- Backend: Deployable to Railway, Render, or any Node.js host
 
 ## License
 
